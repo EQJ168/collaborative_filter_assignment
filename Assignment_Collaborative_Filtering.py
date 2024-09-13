@@ -19,7 +19,7 @@ data = data.dropna()
 score_matrix = data.pivot_table(index='user_id', columns='Title', values='user_score', fill_value=0)
 
 # Get user input for the game title
-game_title = st.text_input("Enter a game title:", "")
+game_title = st.text_input("Enter a game title:", "Pro Evolution Soccer 2018")
 
 if game_title in score_matrix.columns:
     # Display similar game correlations
