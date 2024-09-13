@@ -71,7 +71,7 @@ if game_title in score_matrix.columns:
     st.write(corr_drive_sorted.columns.tolist())
 
     # Join with user score count
-    user_scores_count = pd.DataFrame(data.groupby('Title')['user_score'].count(), columns=['total num of user_score'])
+    user_scores_count = pd.DataFrame(data.groupby('Title')['user_score'].count(), columns=['total num_of_user_score'])
     st.write("Columns in user_scores_count:")
     st.write(user_scores_count.columns.tolist())
 
@@ -79,17 +79,16 @@ if game_title in score_matrix.columns:
     st.write("Columns in merged_corr_drive after join:")
     st.write(merged_corr_drive.columns.tolist())
 
-    # Display top 10 correlations
-    st.write("Top 10 Correlations:")
-    st.dataframe(merged_corr_drive)
-
     # Check for missing scores
-    missing_scores = merged_corr_drive['total num of user_score'].isnull().sum()
-    st.write(f"Number of missing 'total num of user_score': {missing_scores}")
+    if 'total num_of_user_score' in merged_corr_drive.columns:
+        missing_scores = merged_corr_drive['total num_of_user_score'].isnull().sum()
+        st.write(f"Number of missing 'total num_of_user_score': {missing_scores}")
 
-    # Filter and display high score correlations
-    high_score_corr = merged_corr_drive[merged_corr_drive['total num_of_user_score'] > 10].sort_values('Correlation', ascending=False).head()
-    st.write("Correlations with 'total num of user_score' > 10:")
-    st.dataframe(high_score_corr)
+        # Filter and display high score correlations
+        high_score_corr = merged_corr_drive[merged_corr_drive['total num_of_user_score'] > 10].sort_values('Correlation', ascending=False).head()
+        st.write("Correlations with 'total num_of_user_score' > 10:")
+        st.dataframe(high_score_corr)
+    else:
+        st.write("Column 'total num_of_user_score' not found in merged_corr_drive.")
 else:
     st.write(f"The game title '{game_title}' is not in the dataset.")
