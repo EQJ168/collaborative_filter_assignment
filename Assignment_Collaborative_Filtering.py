@@ -19,29 +19,28 @@ data = load_data()
 # Create a pivot table for scores
 score_matrix = data.pivot_table(index='user_id', columns='Title', values='user_score', fill_value=0)
 
-# User input for the game title
-game_title = st.text_input("Enter a game title", "")
+# Dropdown menu for selecting a game title
+game_titles = score_matrix.columns.sort_values().tolist()  # Sorting the game titles for better searchability
+game_title = st.selectbox("Select a game title", game_titles)
 
-# Display results only when a game title is entered
+# Display results only when a game title is selected
 if game_title:
-    if game_title in score_matrix.columns:
-        game_user_score = score_matrix[game_title]
-        similar_to_game = score_matrix.corrwith(game_user_score)
-        corr_drive = pd.DataFrame(similar_to_game, columns=['Correlation']).dropna()
+    game_user_score = score_matrix[game_title]
+    similar_to_game = score_matrix.corrwith(game_user_score)
+    corr_drive = pd.DataFrame(similar_to_game, columns=['Correlation']).dropna()
 
-        # Display correlations
-        st.subheader(f"Correlations for '{game_title}':")
-        st.dataframe(corr_drive.sort_values('Correlation', ascending=False).head(10))
+    # Display correlations
+    st.subheader(f"Correlations for '{game_title}':")
+    st.dataframe(corr_drive.sort_values('Correlation', ascending=False).head(10))
 
-        # Join with user scores count
-        user_scores_count = data.groupby('Title')['user_score'].count().rename('total num_of_user_score')
-        merged_corr_drive = corr_drive.join(user_scores_count, how='left')
+    # Join with user scores count
+    user_scores_count = data.groupby('Title')['user_score'].count().rename('total num_of_user_score')
+    merged_corr_drive = corr_drive.join(user_scores_count, how='left')
 
-        # Filter and display high score correlations
-        st.subheader("Detailed High Score Correlations:")
-        high_score_corr = merged_corr_drive[merged_corr_drive['total num_of_user_score'] > 10].sort_values('Correlation', ascending=False).head()
-        st.dataframe(high_score_corr)
-    else:
-        st.error(f"The game title '{game_title}' is not found in the dataset.")
+    # Filter and display high score correlations
+    st.subheader("Detailed High Score Correlations:")
+    high_score_corr = merged_corr_drive[merged_corr_drive['total num_of_user_score'] > 10].sort_values('Correlation', ascending=False).head()
+    st.dataframe(high_score_corr)
+
 else:
-    st.info('Please enter a game title to see the correlations.')
+    st.info('Please select a game title from the dropdown to see the correlations.')
