@@ -1,113 +1,79 @@
-{
- "cells": [
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "id": "ea09ed9b-b593-4411-9ce6-e09cfa0b689b",
-   "metadata": {},
-   "outputs": [],
-   "source": [
-    "import pandas as pd\n",
-    "import streamlit as st\n",
-    "\n",
-    "# Load the dataset using the correct file path\n",
-    "path = 'C:/Users/User/Documents/NewDataSet.csv'\n",
-    "df = pd.read_csv(path)\n",
-    "\n",
-    "# Display the first few rows of the dataset\n",
-    "st.write(\"First few rows of the dataset:\")\n",
-    "st.dataframe(df.head())\n",
-    "\n",
-    "# Load another dataset\n",
-    "path_user = 'C:/Users/User/Downloads/User_Dataset.csv'\n",
-    "userset = pd.read_csv(path_user)\n",
-    "\n",
-    "# Display the first few rows of the second dataframe\n",
-    "st.write(\"First few rows of the user dataset:\")\n",
-    "st.dataframe(userset.head())\n",
-    "\n",
-    "# Merge datasets\n",
-    "data = pd.merge(df, userset, on='Title')\n",
-    "\n",
-    "# Display the merged data\n",
-    "st.write(\"Merged dataset:\")\n",
-    "st.dataframe(data.head())\n",
-    "\n",
-    "# Handle missing values\n",
-    "data = data.dropna()\n",
-    "\n",
-    "# Display the number of missing values\n",
-    "st.write(\"Missing values after dropping NA:\")\n",
-    "st.write(data.isna().sum())\n",
-    "\n",
-    "# Groupby and calculate the mean user_score\n",
-    "grouped_data = data.groupby('Title')['user_score'].mean().sort_values(ascending=False).head()\n",
-    "\n",
-    "# Display the groupby results\n",
-    "st.write(\"Top Titles by average user_score:\")\n",
-    "st.dataframe(grouped_data)\n",
-    "\n",
-    "# Group by and count user scores\n",
-    "score_counts = data.groupby('Title')['user_score'].count().sort_values(ascending=False).head()\n",
-    "\n",
-    "# Display the count of user scores\n",
-    "st.write(\"Top Titles by number of user scores:\")\n",
-    "st.dataframe(score_counts)\n",
-    "\n",
-    "# Pivot table for scores\n",
-    "score_matrix = data.pivot_table(index='user_id', columns='Title', values='user_score', fill_value=0)\n",
-    "\n",
-    "# Display the score matrix\n",
-    "st.write(\"Score matrix:\")\n",
-    "st.dataframe(score_matrix.head())\n",
-    "\n",
-    "# Display similar game correlations\n",
-    "game_user_score = score_matrix['Pro Evolution Soccer 2018']\n",
-    "similar_to_game = score_matrix.corrwith(game_user_score)\n",
-    "corr_drive = pd.DataFrame(similar_to_game, columns=['Correlation']).dropna()\n",
-    "\n",
-    "# Display correlations\n",
-    "st.write(\"Correlations with 'Pro Evolution Soccer 2018':\")\n",
-    "st.dataframe(corr_drive.head())\n",
-    "\n",
-    "# Drop unnecessary column and sort correlations\n",
-    "corr_drive_sorted = corr_drive.sort_values('Correlation', ascending=False).head(10)\n",
-    "merged_corr_drive = corr_drive_sorted.join(pd.DataFrame(data.groupby('Title')['user_score'].count(), columns=['total num of user score']), how='left')\n",
-    "\n",
-    "# Display top 10 correlations\n",
-    "st.write(\"Top 10 Correlations:\")\n",
-    "st.dataframe(merged_corr_drive)\n",
-    "\n",
-    "# Check for missing scores\n",
-    "missing_scores = merged_corr_drive['total num of user score'].isnull().sum()\n",
-    "st.write(f\"Number of missing 'total num of user score': {missing_scores}\")\n",
-    "\n",
-    "# Filter and display high score correlations\n",
-    "high_score_corr = merged_corr_drive[merged_corr_drive['total num of user score'] > 10].sort_values('Correlation', ascending=False).head()\n",
-    "st.write(\"Correlations with 'total num of user score' > 10:\")\n",
-    "st.dataframe(high_score_corr)\n"
-   ]
-  }
- ],
- "metadata": {
-  "kernelspec": {
-   "display_name": "Python 3 (ipykernel)",
-   "language": "python",
-   "name": "python3"
-  },
-  "language_info": {
-   "codemirror_mode": {
-    "name": "ipython",
-    "version": 3
-   },
-   "file_extension": ".py",
-   "mimetype": "text/x-python",
-   "name": "python",
-   "nbconvert_exporter": "python",
-   "pygments_lexer": "ipython3",
-   "version": "3.12.4"
-  }
- },
- "nbformat": 4,
- "nbformat_minor": 5
-}
+import pandas as pd
+import streamlit as st
+
+# Load the dataset using the correct file path
+path = 'C:/Users/User/Documents/NewDataSet.csv'
+df = pd.read_csv(path)
+
+# Display the first few rows of the dataset
+st.write("First few rows of the dataset:")
+st.dataframe(df.head())
+
+# Load another dataset
+path_user = 'C:/Users/User/Downloads/User_Dataset.csv'
+userset = pd.read_csv(path_user)
+
+# Display the first few rows of the second dataframe
+st.write("First few rows of the user dataset:")
+st.dataframe(userset.head())
+
+# Merge datasets
+data = pd.merge(df, userset, on='Title')
+
+# Display the merged data
+st.write("Merged dataset:")
+st.dataframe(data.head())
+
+# Handle missing values
+data = data.dropna()
+
+# Display the number of missing values
+st.write("Missing values after dropping NA:")
+st.write(data.isna().sum())
+
+# Groupby and calculate the mean user_score
+grouped_data = data.groupby('Title')['user_score'].mean().sort_values(ascending=False).head()
+
+# Display the groupby results
+st.write("Top Titles by average user_score:")
+st.dataframe(grouped_data)
+
+# Group by and count user scores
+score_counts = data.groupby('Title')['user_score'].count().sort_values(ascending=False).head()
+
+# Display the count of user scores
+st.write("Top Titles by number of user scores:")
+st.dataframe(score_counts)
+
+# Pivot table for scores
+score_matrix = data.pivot_table(index='user_id', columns='Title', values='user_score', fill_value=0)
+
+# Display the score matrix
+st.write("Score matrix:")
+st.dataframe(score_matrix.head())
+
+# Display similar game correlations
+game_user_score = score_matrix['Pro Evolution Soccer 2018']
+similar_to_game = score_matrix.corrwith(game_user_score)
+corr_drive = pd.DataFrame(similar_to_game, columns=['Correlation']).dropna()
+
+# Display correlations
+st.write("Correlations with 'Pro Evolution Soccer 2018':")
+st.dataframe(corr_drive.head())
+
+# Drop unnecessary column and sort correlations
+corr_drive_sorted = corr_drive.sort_values('Correlation', ascending=False).head(10)
+merged_corr_drive = corr_drive_sorted.join(pd.DataFrame(data.groupby('Title')['user_score'].count(), columns=['total num of user score']), how='left')
+
+# Display top 10 correlations
+st.write("Top 10 Correlations:")
+st.dataframe(merged_corr_drive)
+
+# Check for missing scores
+missing_scores = merged_corr_drive['total num of user score'].isnull().sum()
+st.write(f"Number of missing 'total num of user score': {missing_scores}")
+
+# Filter and display high score correlations
+high_score_corr = merged_corr_drive[merged_corr_drive['total num of user score'] > 10].sort_values('Correlation', ascending=False).head()
+st.write("Correlations with 'total num of user score' > 10:")
+st.dataframe(high_score_corr)
