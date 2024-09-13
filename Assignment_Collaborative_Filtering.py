@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 
 # Load the dataset using the correct file path
-path = 'C:/Users/User/Documents/NewDataSet.csv'
+path = 'NewDataSet.csv'
 df = pd.read_csv(path)
 
 # Display the first few rows of the dataset
@@ -10,7 +10,7 @@ st.write("First few rows of the dataset:")
 st.dataframe(df.head())
 
 # Load another dataset
-path_user = 'C:/Users/User/Downloads/User_Dataset.csv'
+path_user = 'User_Dataset.csv'
 userset = pd.read_csv(path_user)
 
 # Display the first few rows of the second dataframe
