@@ -20,15 +20,12 @@ score_matrix = data.pivot_table(index='user_id', columns='Title', values='user_s
 
 game_titles = score_matrix.columns.sort_values().tolist()
 
-# Insert an empty option at the beginning of the list
-game_titles.insert(0, '')
-
 # Split layout into two columns for better organization
 col1, col2 = st.columns([1, 3])
 
 with col1:
-    # Game title selection with an empty default option
-    game_title = st.selectbox("Select a game title", game_titles, index=0, help="Choose a game to see its correlation with others.")
+    # Game title selection without 'expanded' or 'label_visibility' parameters
+    game_title = st.selectbox("Select a game title", game_titles, help="Choose a game to see its correlation with others.")
 
 # Divider line for better visual separation
 st.markdown("---")
