@@ -64,7 +64,7 @@ if theme_option == 'Dark':
     }
     </style>
     """, unsafe_allow_html=True)
-else if theme_option == 'Light':
+else theme_option == 'Light':
     st.markdown("""
     <style>
     .stApp {
