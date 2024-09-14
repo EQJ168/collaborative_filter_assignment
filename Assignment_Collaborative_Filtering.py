@@ -24,7 +24,7 @@ game_titles = score_matrix.columns.sort_values().tolist()
 col1, col2 = st.columns([1, 3])
 
 with col1:
-    # Remove expanded=True, and label_visibility='visible' if it's not supported by your Streamlit version
+    # Game title selection without 'expanded' or 'label_visibility' parameters
     game_title = st.selectbox("Select a game title", game_titles, help="Choose a game to see its correlation with others.")
 
 # Divider line for better visual separation
@@ -52,24 +52,12 @@ if game_title:
 else:
     st.warning("Please select a game title from the dropdown to see the correlations.")
 
-# Optional customization: Toggle between light/dark themes (optional)
-theme_option = st.radio('Choose Theme', ['Light', 'Dark'])
-
-if theme_option == 'Dark':
-    st.markdown("""
+# Only use dark theme
+st.markdown("""
     <style>
     .stApp {
         background-color: #0e1117;
         color: white;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-else theme_option == 'Light':
-    st.markdown("""
-    <style>
-    .stApp {
-        background-color: white;
-        color: black;
     }
     </style>
     """, unsafe_allow_html=True)
