@@ -44,10 +44,16 @@ if game_title:
     user_scores_count = data.groupby('Title')['user_score'].count().rename('total num_of_user_score')
     merged_corr_drive = corr_drive.join(user_scores_count, how='left')
 
-    # Show detailed high-score correlations filtered by score count
+    # Add developer and publisher columns (assuming they're in the dataset)
+    additional_info = data[['Title', 'Developer', 'Publisher']].drop_duplicates().set_index('Title')
+    detailed_corr_info = merged_corr_drive.join(additional_info, how='left')
+
+    # Show detailed high-score correlations with more information
     st.subheader("Detailed High Score Correlations (with > 10 scores):")
-    high_score_corr = merged_corr_drive[merged_corr_drive['total num_of_user_score'] > 10].sort_values('Correlation', ascending=False).head()
-    st.dataframe(high_score_corr)
+    high_score_corr = detailed_corr_info[detailed_corr_info['total num_of_user_score'] > 10].sort_values('Correlation', ascending=False).head()
+    
+    # Display the dataframe with additional details
+    st.dataframe(high_score_corr[['Correlation', 'total num_of_user_score', 'Developer', 'Publisher']])
 
 else:
     st.warning("Please select a game title from the dropdown to see the correlations.")
