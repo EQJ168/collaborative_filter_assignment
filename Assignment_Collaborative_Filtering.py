@@ -45,7 +45,7 @@ if game_title:
     merged_corr_drive = corr_drive.join(user_scores_count, how='left')
 
     # Add developer and publisher columns (assuming they're in the dataset)
-    additional_info = data[['Title', 'Developer', 'Publisher']].drop_duplicates().set_index('Title')
+    additional_info = data[['Title', 'Developer', 'Genres']].drop_duplicates().set_index('Title')
     detailed_corr_info = merged_corr_drive.join(additional_info, how='left')
 
     # Show detailed high-score correlations with more information
@@ -53,7 +53,7 @@ if game_title:
     high_score_corr = detailed_corr_info[detailed_corr_info['total num_of_user_score'] > 10].sort_values('Correlation', ascending=False).head()
     
     # Display the dataframe with additional details
-    st.dataframe(high_score_corr[['Correlation', 'total num_of_user_score', 'Developer', 'Publisher']])
+    st.dataframe(high_score_corr[['Correlation', 'total num_of_user_score', 'Developer', 'Genres']])
 
 else:
     st.warning("Please select a game title from the dropdown to see the correlations.")
