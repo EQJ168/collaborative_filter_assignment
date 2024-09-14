@@ -1,9 +1,13 @@
 import pandas as pd
 import streamlit as st
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-st.title('Game Correlation Finder')
+# Title with emojis for a friendly, engaging look
+st.title('🎮 Game Correlation Finder')
+st.markdown("Find out how games are related based on user ratings!")
 
-@st.cache  
+@st.cache_data
 def load_data():
     path = 'NewDataSet.csv'
     df = pd.read_csv(path)
@@ -16,23 +20,69 @@ data = load_data()
 
 score_matrix = data.pivot_table(index='user_id', columns='Title', values='user_score', fill_value=0)
 
-game_titles = score_matrix.columns.sort_values().tolist()  
-game_title = st.selectbox("Select a game title", game_titles)
+game_titles = score_matrix.columns.sort_values().tolist()
+
+# Split layout into two columns for better organization
+col1, col2 = st.columns([1, 3])
+
+with col1:
+    # Expanded select box for easier game title selection
+    game_title = st.selectbox("Select a game title", game_titles, help="Choose a game to see its correlation with others.", label_visibility='visible', expanded=True)
+
+# Divider line for better visual separation
+st.markdown("---")
 
 if game_title:
     game_user_score = score_matrix[game_title]
     similar_to_game = score_matrix.corrwith(game_user_score)
     corr_drive = pd.DataFrame(similar_to_game, columns=['Correlation']).dropna()
 
-    st.subheader(f"Correlations for '{game_title}':")
-    st.dataframe(corr_drive.sort_values('Correlation', ascending=False).head(10))
+    # Display the top 10 correlated games in the second column
+    with col2:
+        st.subheader(f"🎯 Correlations for '{game_title}'")
+        st.dataframe(corr_drive.sort_values('Correlation', ascending=False).head(10))
 
+    # Display number of user scores for each game
     user_scores_count = data.groupby('Title')['user_score'].count().rename('total num_of_user_score')
     merged_corr_drive = corr_drive.join(user_scores_count, how='left')
 
-    st.subheader("Detailed High Score Correlations:")
+    # Show detailed high-score correlations filtered by score count
+    st.subheader("Detailed High Score Correlations (with > 10 scores):")
     high_score_corr = merged_corr_drive[merged_corr_drive['total num_of_user_score'] > 10].sort_values('Correlation', ascending=False).head()
     st.dataframe(high_score_corr)
 
+    # Add bar chart visualization for correlations
+    if not high_score_corr.empty:
+        st.subheader(f"📊 Top Correlated Games with '{game_title}'")
+        fig, ax = plt.subplots(figsize=(10, 6))
+        high_score_corr.sort_values('Correlation', ascending=True).plot(kind='barh', y='Correlation', ax=ax)
+        ax.set_xlabel('Correlation')
+        ax.set_ylabel('Game Titles')
+        ax.set_title(f"Top Correlated Games with '{game_title}'")
+        st.pyplot(fig)
+
 else:
-    st.info('Please select a game title from the dropdown to see the correlations.')
+    st.warning("Please select a game title from the dropdown to see the correlations.")
+
+# Optional customization: Toggle between light/dark themes (optional)
+theme_option = st.radio('Choose Theme', ['Light', 'Dark'])
+
+if theme_option == 'Dark':
+    st.markdown("""
+    <style>
+    .stApp {
+        background-color: #0e1117;
+        color: white;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown("""
+    <style>
+    .stApp {
+        background-color: white;
+        color: black;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
