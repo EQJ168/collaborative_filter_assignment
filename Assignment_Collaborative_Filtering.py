@@ -1,7 +1,18 @@
 import pandas as pd
 import streamlit as st
-import matplotlib.pyplot as plt
-import seaborn as sns
+import subprocess
+import sys
+
+# Ensure matplotlib is installed and configured correctly
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "matplotlib"])
+    import matplotlib.pyplot as plt
+
+# Use the 'Agg' backend to ensure compatibility with Streamlit
+import matplotlib
+matplotlib.use('Agg')
 
 # Title with emojis for a friendly, engaging look
 st.title('🎮 Game Correlation Finder')
@@ -59,6 +70,8 @@ if game_title:
         ax.set_xlabel('Correlation')
         ax.set_ylabel('Game Titles')
         ax.set_title(f"Top Correlated Games with '{game_title}'")
+        
+        # Display the plot within Streamlit
         st.pyplot(fig)
 
 else:
@@ -85,4 +98,3 @@ else:
     }
     </style>
     """, unsafe_allow_html=True)
-
