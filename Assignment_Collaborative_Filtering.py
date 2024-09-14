@@ -54,10 +54,10 @@ if game_title:
 
     # Show detailed high-score correlations with more information
     st.subheader("Games you may like (with more than 10 number of user scores):")
-    high_score_corr = detailed_corr_info[detailed_corr_info['total_num_of_user_score'] > 10].sort_values('Correlation', ascending=False).head()
+    high_score_corr = detailed_corr_info[detailed_corr_info['total num_of_user_score'] > 10].sort_values('Correlation', ascending=False).head()
     
     # Display the dataframe with additional details including average user score
-    st.dataframe(high_score_corr[['Correlation', 'total_num_of_user_score', 'avg_user_score', 'Developer', 'Genres']])
+    st.dataframe(high_score_corr[['Correlation', 'total num_of_user_score', 'avg_user_score', 'Developer', 'Genres']])
 
 else:
     st.warning("Please select a game title from the dropdown to see the correlations.")
