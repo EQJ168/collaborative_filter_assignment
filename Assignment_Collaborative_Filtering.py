@@ -36,14 +36,14 @@ if user_id:
     st.write(user_ratings.sort_values(ascending=False))
 
     # Find games that are similar to the ones the user has rated
-    similar_games = pd.Series()
+    similar_games = pd.Series(dtype=float)  # Initialize as empty series
     
     for game in user_ratings.index:
         # Get correlation for each rated game
         similar_to_game = score_matrix.corrwith(score_matrix[game])
         
-        # Create a Series for each game and add it to the list of similar games
-        similar_games = similar_games.append(similar_to_game)
+        # Concatenate the Series for each game to the list of similar games
+        similar_games = pd.concat([similar_games, similar_to_game])
 
     # Group by game title and sum up the correlations
     similar_games = similar_games.groupby(similar_games.index).mean()
