@@ -24,8 +24,8 @@ game_titles = score_matrix.columns.sort_values().tolist()
 col1, col2 = st.columns([1, 3])
 
 with col1:
-    # Expanded select box for easier game title selection
-    game_title = st.selectbox("Select a game title", game_titles, help="Choose a game to see its correlation with others.", label_visibility='visible', expanded=True)
+    # Remove expanded=True, and label_visibility='visible' if it's not supported by your Streamlit version
+    game_title = st.selectbox("Select a game title", game_titles, help="Choose a game to see its correlation with others.")
 
 # Divider line for better visual separation
 st.markdown("---")
